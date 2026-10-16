@@ -23,7 +23,7 @@
     "desktop",
     "paperless"
   ],
-  "author": "Ivette Sanjurjo",
+  "author": "Ivette Sanjurjo <ivettefcb@gmail.com>",
   "license": "MIT",
   "build": {
     "appId": "com.ivetetetete.paperless",
@@ -71,6 +71,7 @@
     },
     "linux": {
       "icon": "assets/icon.png",
+      "maintainer": "Ivette Sanjurjo <ivettefcb@gmail.com>",
       "artifactName": "Paperless-linux.${ext}",
       "category": "Utility",
       "target": [
