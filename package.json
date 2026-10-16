@@ -1,0 +1,86 @@
+{
+  "name": "paperless",
+  "productName": "Paperless",
+  "version": "1.0.0",
+  "description": "Aplicación de notas adhesivas flotantes de escritorio con Electron",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivetetetete/paperless.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux",
+    "postinstall": "node -e \"if (process.platform === 'darwin') { const { execSync } = require('child_process'); try { execSync('xattr -cr node_modules/electron/dist/Electron.app && codesign --force --deep --sign - node_modules/electron/dist/Electron.app'); } catch (e) {} }\""
+  },
+  "keywords": [
+    "electron",
+    "sticky-notes",
+    "post-it",
+    "desktop",
+    "paperless"
+  ],
+  "author": "Ivette Sanjurjo",
+  "license": "MIT",
+  "build": {
+    "appId": "com.ivetetetete.paperless",
+    "productName": "Paperless",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ivetetetete",
+        "repo": "paperless"
+      }
+    ],
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "assets/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.productivity",
+      "artifactName": "Paperless-mac-${arch}.${ext}",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64", "x64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["arm64", "x64"]
+        }
+      ]
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "artifactName": "Paperless-Setup-win.${ext}",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "artifactName": "Paperless-linux.${ext}",
+      "category": "Utility",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

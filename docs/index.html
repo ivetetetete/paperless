@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paperless — Notas adhesivas flotantes para tu escritorio</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="logo">
+        <img src="favicon.svg" alt="" class="logo-icon" width="28" height="28" />
+        <span class="logo-text">Paperless</span>
+      </div>
+      <a href="https://github.com/ivetetetete/paperless" target="_blank" rel="noopener" class="nav-link">
+        GitHub ↗
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-content">
+        <span class="badge" id="version-badge">Versión 1.0.0 · Gratis y Open Source</span>
+        <h1>Tus ideas siempre visibles en tu escritorio.</h1>
+        <p class="subtitle">
+          Post-its flotantes, minimalistas y con comandos rápidos tipo Notion (<code>/</code>).
+          Sin bordes que estorben, con guardado automático local y diseño en tonos pastel.
+        </p>
+
+        <div class="cta-group">
+          <a id="primary-download-btn" href="https://github.com/ivetetetete/paperless/releases/latest" class="btn-primary">
+            <span id="primary-download-text">Descargar Paperless</span>
+          </a>
+          <span class="os-hint" id="os-detected-label">Disponible para macOS, Windows y Linux</span>
+        </div>
+
+        <div class="platforms-grid">
+          <a id="dl-mac-arm64" href="https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-mac-arm64.dmg" class="platform-card">
+            <div class="platform-title">macOS (Apple Silicon)</div>
+            <div class="platform-ext">Descargar .dmg (M1/M2/M3/M4)</div>
+          </a>
+          <a id="dl-mac-x64" href="https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-mac-x64.dmg" class="platform-card">
+            <div class="platform-title">macOS (Intel)</div>
+            <div class="platform-ext">Descargar .dmg (x64)</div>
+          </a>
+          <a id="dl-win" href="https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-Setup-win.exe" class="platform-card">
+            <div class="platform-title">Windows</div>
+            <div class="platform-ext">Instalador .exe (64-bit)</div>
+          </a>
+          <a id="dl-linux" href="https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-linux.AppImage" class="platform-card">
+            <div class="platform-title">Linux</div>
+            <div class="platform-ext">Descargar .AppImage</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-preview">
+        <div class="mock-toolbar">
+          <span>Paperless</span>
+          <span class="mock-btn-new">+ Nueva Nota</span>
+          <span class="mock-btn-eye" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </span>
+        </div>
+
+        <div class="mock-note note-yellow">
+          <div class="mock-note-header">
+            <div class="mock-dots">
+              <span class="d-y"></span><span class="d-p"></span><span class="d-b"></span><span class="d-g"></span>
+            </div>
+            <span>✕</span>
+          </div>
+          <div class="mock-note-body">
+            <h3>Lista de hoy</h3>
+            <div class="mock-todo done">Diseñar interfaz en tonos pastel</div>
+            <div class="mock-todo">Añadir comandos con <b>/</b> estilo Notion</div>
+            <div class="mock-todo">Publicar versión 1.0</div>
+          </div>
+          <div class="mock-note-footer">
+            <b>B</b> <i>I</i> <u>U</u> <s>S</s> • ☑ <span class="mock-slash">/ Comandos</span>
+          </div>
+        </div>
+
+        <div class="mock-note note-pink">
+          <div class="mock-note-header">
+            <div class="mock-dots">
+              <span class="d-y"></span><span class="d-p"></span><span class="d-b"></span><span class="d-g"></span>
+            </div>
+            <span>✕</span>
+          </div>
+          <div class="mock-note-body">
+            <p>Escribe <b>/tarea</b> o <b>/h1</b> en cualquier momento para dar formato sin soltar el teclado.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features container">
+      <div class="feature-card">
+        <div class="feature-icon">/</div>
+        <h3>Comandos <code>/</code> estilo Notion</h3>
+        <p>Escribe <code>/</code> para insertar listas de tareas interactivas, encabezados, citas, separadores o formato de texto al instante.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M3 9h18"/>
+          </svg>
+        </div>
+        <h3>Lienzo 100% transparente</h3>
+        <p>Las notas flotan sobre tu escritorio mientras los clics atraviesan las zonas vacías hacia tus demás aplicaciones.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+        </div>
+        <h3>Privacidad y guardado local</h3>
+        <p>Tus notas, colores, posiciones y tamaños se guardan automáticamente en tu ordenador sin depender de servidores externos.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <p>Creado con Electron · <a href="https://github.com/ivetetetete/paperless/releases">Ver todas las versiones en GitHub Releases</a></p>
+  </footer>
+
+  <script>
+    const ua = navigator.userAgent.toLowerCase();
+    const primaryBtn = document.getElementById('primary-download-btn');
+    const primaryText = document.getElementById('primary-download-text');
+    const osLabel = document.getElementById('os-detected-label');
+
+    if (ua.includes('mac')) {
+      primaryText.textContent = 'Descargar para macOS (.dmg)';
+      primaryBtn.href = 'https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-mac-arm64.dmg';
+      osLabel.textContent = 'Detectado: macOS · También disponible abajo para Intel, Windows y Linux';
+    } else if (ua.includes('win')) {
+      primaryText.textContent = 'Descargar para Windows (.exe)';
+      primaryBtn.href = 'https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-Setup-win.exe';
+      osLabel.textContent = 'Detectado: Windows (64-bit)';
+    } else if (ua.includes('linux')) {
+      primaryText.textContent = 'Descargar para Linux (.AppImage)';
+      primaryBtn.href = 'https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-linux.AppImage';
+      osLabel.textContent = 'Detectado: Linux';
+    }
+
+    fetch('https://api.github.com/repos/ivetetetete/paperless/releases/latest')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((release) => {
+        if (!release) return;
+        const badge = document.getElementById('version-badge');
+        if (release.tag_name) {
+          badge.textContent = `Versión ${release.tag_name} · Gratis y Open Source`;
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

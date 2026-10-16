@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#252836" />
+      <stop offset="100%" stop-color="#12131a" />
+    </linearGradient>
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff6b8" />
+      <stop offset="100%" stop-color="#ffda66" />
+    </linearGradient>
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd0df" />
+      <stop offset="100%" stop-color="#ff94b2" />
+    </linearGradient>
+    <linearGradient id="flapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c030" />
+      <stop offset="100%" stop-color="#dca214" />
+    </linearGradient>
+    <clipPath id="pinkClip">
+      <rect x="102" y="96" width="276" height="276" rx="32" />
+    </clipPath>
+    <clipPath id="noteClip">
+      <path d="M 146 114 H 382 A 32 32 0 0 1 414 146 V 316 L 328 402 H 146 A 32 32 0 0 1 114 370 V 146 A 32 32 0 0 1 146 114 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- App Icon Squircle Background -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#bgGrad)" stroke="#ffffff" stroke-opacity="0.14" stroke-width="6" />
+
+  <!-- Back Pink Sticky Note -->
+  <g transform="rotate(-10 240 234)">
+    <!-- Soft layered vector shadow -->
+    <rect x="102" y="110" width="276" height="276" rx="32" fill="#07080c" fill-opacity="0.38" />
+    <g clip-path="url(#pinkClip)">
+      <rect x="102" y="96" width="276" height="276" fill="url(#pinkGrad)" />
+      <rect x="102" y="96" width="276" height="46" fill="#000000" fill-opacity="0.06" />
+    </g>
+  </g>
+
+  <!-- Front Yellow Sticky Note -->
+  <g transform="rotate(3 264 258)">
+    <!-- Soft layered vector shadow -->
+    <path d="M 146 132 H 382 A 32 32 0 0 1 414 164 V 334 L 328 420 H 146 A 32 32 0 0 1 114 388 V 164 A 32 32 0 0 1 146 132 Z" fill="#07080c" fill-opacity="0.22" />
+    <path d="M 146 124 H 382 A 32 32 0 0 1 414 156 V 326 L 328 412 H 146 A 32 32 0 0 1 114 380 V 156 A 32 32 0 0 1 146 124 Z" fill="#07080c" fill-opacity="0.38" />
+
+    <g clip-path="url(#noteClip)">
+      <!-- Main note body -->
+      <rect x="114" y="114" width="300" height="288" fill="url(#yellowGrad)" />
+
+      <!-- Header bar -->
+      <rect x="114" y="114" width="300" height="52" fill="#000000" fill-opacity="0.06" />
+
+      <!-- Palette dots -->
+      <circle cx="150" cy="140" r="9" fill="#ff8fab" />
+      <circle cx="176" cy="140" r="9" fill="#72c2e8" />
+      <circle cx="202" cy="140" r="9" fill="#76c893" />
+
+      <!-- Checklist item 1 (checked) -->
+      <rect x="148" y="196" width="32" height="32" rx="9" fill="#3a3518" />
+      <path d="M 156 212 L 162 218 L 173 206" fill="none" stroke="#fff6b8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <rect x="196" y="204" width="168" height="16" rx="8" fill="#3a3518" fill-opacity="0.88" />
+
+      <!-- Checklist item 2 -->
+      <rect x="148" y="252" width="32" height="32" rx="9" fill="none" stroke="#3a3518" stroke-width="5" stroke-opacity="0.65" />
+      <rect x="196" y="260" width="132" height="16" rx="8" fill="#3a3518" fill-opacity="0.6" />
+
+      <!-- Slash command badge "/" -->
+      <rect x="148" y="312" width="112" height="40" rx="12" fill="#3a3518" fill-opacity="0.12" />
+      <path d="M 170 341 L 180 323" fill="none" stroke="#3a3518" stroke-width="5" stroke-linecap="round" />
+      <rect x="192" y="326" width="50" height="12" rx="6" fill="#3a3518" fill-opacity="0.75" />
+
+      <!-- Folded corner shadow & flap -->
+      <path d="M 322 402 L 414 310 H 352 A 26 26 0 0 0 326 336 Z" fill="#000000" fill-opacity="0.1" />
+      <path d="M 328 402 L 414 316 H 354 A 26 26 0 0 0 328 342 Z" fill="url(#flapGrad)" />
+    </g>
+  </g>
+</svg>
