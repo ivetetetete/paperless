@@ -29,6 +29,8 @@ let notesVisible = true;
 let isDraggingAny = false;
 let saveTimeout = null;
 
+const MOD_KEY = window.stickyAPI.platform === 'darwin' ? 'Cmd' : 'Ctrl';
+
 const SLASH_COMMANDS = [
   {
     id: 'todo',
@@ -68,21 +70,21 @@ const SLASH_COMMANDS = [
   {
     id: 'bold',
     title: 'Negrita',
-    desc: 'Resaltar texto en negrita (Cmd+B)',
+    desc: `Resaltar texto en negrita (${MOD_KEY}+B)`,
     icon: 'B',
     keywords: 'negrita bold b fuerte'
   },
   {
     id: 'italic',
     title: 'Cursiva',
-    desc: 'Texto en estilo cursiva (Cmd+I)',
+    desc: `Texto en estilo cursiva (${MOD_KEY}+I)`,
     icon: 'I',
     keywords: 'cursiva italic i'
   },
   {
     id: 'underline',
     title: 'Subrayado',
-    desc: 'Subrayar el texto actual (Cmd+U)',
+    desc: `Subrayar el texto actual (${MOD_KEY}+U)`,
     icon: 'U',
     keywords: 'subrayado underline u'
   },
@@ -165,6 +167,14 @@ async function init() {
   renderHistory();
   setupToolbarDraggable();
   setupClickThroughHandling();
+  updateLinuxWindowShape();
+  requestAnimationFrame(() => updateLinuxWindowShape());
+  window.addEventListener('load', () => updateLinuxWindowShape());
+
+  window.addEventListener('blur', () => {
+    if (slashState.open) closeSlashMenu();
+    if (historyOpen) closeHistoryPanel();
+  });
 
   window.addEventListener('beforeunload', () => {
     window.stickyAPI.saveNotes(notes);
@@ -227,6 +237,7 @@ function renderAllNotes() {
     const noteEl = createNoteElement(noteData);
     notesContainer.appendChild(noteEl);
   });
+  updateLinuxWindowShape();
 }
 
 function createNoteElement(noteData) {
@@ -239,6 +250,7 @@ function createNoteElement(noteData) {
   noteEl.style.width = `${noteData.width || DEFAULT_WIDTH}px`;
   noteEl.style.height = `${noteData.height || DEFAULT_HEIGHT}px`;
   noteEl.style.zIndex = noteData.zIndex || 1;
+  noteEl.addEventListener('animationend', () => updateLinuxWindowShape());
 
   const header = document.createElement('div');
   header.className = 'note-header';
@@ -313,9 +325,9 @@ function createFormatBar(noteEl, editor, noteData) {
   bar.className = 'note-format-bar';
 
   const buttons = [
-    { label: '<b>B</b>', title: 'Negrita (Cmd+B)', cmd: 'bold', minWidth: 135 },
-    { label: '<i>I</i>', title: 'Cursiva (Cmd+I)', cmd: 'italic', minWidth: 162 },
-    { label: '<u>U</u>', title: 'Subrayado (Cmd+U)', cmd: 'underline', minWidth: 190 },
+    { label: '<b>B</b>', title: `Negrita (${MOD_KEY}+B)`, cmd: 'bold', minWidth: 135 },
+    { label: '<i>I</i>', title: `Cursiva (${MOD_KEY}+I)`, cmd: 'italic', minWidth: 162 },
+    { label: '<u>U</u>', title: `Subrayado (${MOD_KEY}+U)`, cmd: 'underline', minWidth: 190 },
     { label: '<s>S</s>', title: 'Tachado', cmd: 'strike', minWidth: 216 },
     { label: '•', title: 'Lista con viñetas', cmd: 'bullet', minWidth: 242 },
     { label: '☑', title: 'Lista de tareas', cmd: 'todo', minWidth: 266 }
@@ -742,6 +754,7 @@ function positionAndShowSlashMenu(x, y) {
 
   slashMenu.style.left = `${clampedX}px`;
   slashMenu.style.top = `${clampedY}px`;
+  updateLinuxWindowShape();
 }
 
 function renderSlashMenuItems() {
@@ -789,6 +802,7 @@ function closeSlashMenu() {
   if (!slashState.open) return;
   slashState.open = false;
   slashMenu.style.display = 'none';
+  updateLinuxWindowShape();
 }
 
 function applySlashCommand(cmdId) {
@@ -908,6 +922,7 @@ function addNewNote() {
   notes.push(newNote);
   const noteEl = createNoteElement(newNote);
   notesContainer.appendChild(noteEl);
+  updateLinuxWindowShape();
 
   const editor = noteEl.querySelector('.note-content');
   if (editor) editor.focus();
@@ -976,6 +991,7 @@ function positionHistoryPanel() {
 
   historyPanel.style.left = `${Math.round(left)}px`;
   historyPanel.style.top = `${Math.round(top)}px`;
+  updateLinuxWindowShape();
 }
 
 function toggleHistoryPanel() {
@@ -988,6 +1004,7 @@ function toggleHistoryPanel() {
     positionHistoryPanel();
   } else {
     historyPanel.style.display = 'none';
+    updateLinuxWindowShape();
   }
 }
 
@@ -996,6 +1013,7 @@ function closeHistoryPanel() {
   historyOpen = false;
   btnHistory.classList.remove('active');
   historyPanel.style.display = 'none';
+  updateLinuxWindowShape();
 }
 
 function restoreNoteFromHistory(historyId) {
@@ -1030,6 +1048,7 @@ function restoreNoteFromHistory(historyId) {
   window.stickyAPI.saveHistory(noteHistory);
   scheduleSave();
   renderHistory();
+  updateLinuxWindowShape();
 }
 
 function removeHistoryItem(historyId) {
@@ -1056,6 +1075,7 @@ function renderHistory() {
     empty.textContent =
       'No hay notas en el historial. Cuando cierres una nota con texto o pulses "+ Guardar copia", aparecerá aquí para que puedas recuperarla.';
     historyList.appendChild(empty);
+    updateLinuxWindowShape();
     return;
   }
 
@@ -1107,6 +1127,8 @@ function renderHistory() {
     row.appendChild(preview);
     historyList.appendChild(row);
   });
+
+  updateLinuxWindowShape();
 }
 
 function deleteNote(id, noteEl) {
@@ -1120,6 +1142,7 @@ function deleteNote(id, noteEl) {
   notes = notes.filter((n) => n.id !== id);
   noteEl.remove();
   scheduleSave();
+  updateLinuxWindowShape();
 }
 
 function bringToFront(noteData, noteEl) {
@@ -1161,6 +1184,7 @@ function setupToolbarDraggable() {
     closeSlashMenu();
     isDraggingAny = true;
     toolbar.classList.add('dragging');
+    updateLinuxWindowShape();
 
     const rect = toolbar.getBoundingClientRect();
     startX = e.clientX;
@@ -1183,6 +1207,7 @@ function setupToolbarDraggable() {
       toolbar.classList.remove('dragging');
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      updateLinuxWindowShape();
 
       const finalRect = toolbar.getBoundingClientRect();
       try {
@@ -1203,6 +1228,7 @@ function setupToolbarDraggable() {
     toolbar.style.left = `${pos.x}px`;
     toolbar.style.top = `${pos.y}px`;
     if (historyOpen) positionHistoryPanel();
+    updateLinuxWindowShape();
   });
 }
 
@@ -1218,6 +1244,7 @@ function setupDraggable(noteEl, handleEl, noteData) {
     closeSlashMenu();
     isDraggingAny = true;
     noteEl.classList.add('dragging');
+    updateLinuxWindowShape();
 
     startX = e.clientX;
     startY = e.clientY;
@@ -1244,6 +1271,7 @@ function setupDraggable(noteEl, handleEl, noteData) {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
       scheduleSave();
+      updateLinuxWindowShape();
     };
 
     window.addEventListener('mousemove', onMouseMove);
@@ -1264,6 +1292,7 @@ function setupResizable(noteEl, resizeHandleEl, noteData) {
     closeSlashMenu();
     isDraggingAny = true;
     noteEl.classList.add('resizing');
+    updateLinuxWindowShape();
 
     startX = e.clientX;
     startY = e.clientY;
@@ -1294,6 +1323,7 @@ function setupResizable(noteEl, resizeHandleEl, noteData) {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
       scheduleSave();
+      updateLinuxWindowShape();
     };
 
     window.addEventListener('mousemove', onMouseMove);
@@ -1301,7 +1331,58 @@ function setupResizable(noteEl, resizeHandleEl, noteData) {
   });
 }
 
+function updateLinuxWindowShape() {
+  if (window.stickyAPI.platform !== 'linux' || !window.stickyAPI.setWindowShape) return;
+
+  if (isDraggingAny) {
+    window.stickyAPI.setWindowShape([
+      {
+        x: 0,
+        y: 0,
+        width: window.innerWidth,
+        height: window.innerHeight
+      }
+    ]);
+    return;
+  }
+
+  const rects = [];
+  const pad = 4;
+  const elements = document.querySelectorAll('.interactive');
+
+  elements.forEach((el) => {
+    const style = window.getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden') return;
+    if (el.closest('#notes-container') && !notesVisible) return;
+
+    const width = el.offsetWidth;
+    const height = el.offsetHeight;
+    if (width <= 0 || height <= 0) return;
+
+    const left = el.offsetLeft;
+    const top = el.offsetTop;
+
+    rects.push({
+      x: Math.max(0, Math.floor(left - pad)),
+      y: Math.max(0, Math.floor(top - pad)),
+      width: Math.ceil(width + pad * 2),
+      height: Math.ceil(height + pad * 2)
+    });
+  });
+
+  window.stickyAPI.setWindowShape(rects);
+}
+
 function setupClickThroughHandling() {
+  if (window.stickyAPI.platform === 'linux') {
+    window.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.interactive') && window.stickyAPI.focusWindow) {
+        window.stickyAPI.focusWindow();
+      }
+    });
+    return;
+  }
+
   let lastIgnoreState = true;
 
   window.addEventListener('mousemove', (e) => {
@@ -1339,6 +1420,7 @@ btnToggleVisibility.addEventListener('click', () => {
   btnToggleVisibility.classList.toggle('is-visible', notesVisible);
   btnToggleVisibility.classList.toggle('is-hidden', !notesVisible);
   btnToggleVisibility.title = notesVisible ? 'Ocultar notas' : 'Mostrar notas';
+  updateLinuxWindowShape();
 });
 
 btnHistory.addEventListener('click', toggleHistoryPanel);

@@ -26,7 +26,7 @@
   <main>
     <section class="hero container">
       <div class="hero-content">
-        <span class="badge" id="version-badge">Versión 1.1.0 · Gratis y Open Source</span>
+        <span class="badge" id="version-badge">Versión 1.1.1 · Gratis y Open Source</span>
         <h1>Tus ideas siempre visibles en tu escritorio.</h1>
         <p class="subtitle">
           Post-its flotantes, minimalistas y con comandos rápidos tipo Notion (<code>/</code>).
@@ -62,6 +62,19 @@
             <div class="platform-ext">Portable .AppImage</div>
           </a>
         </div>
+
+        <details class="mac-help" id="mac-help">
+          <summary>¿Aviso de verificación de Apple al abrir en macOS?</summary>
+          <div class="mac-help-body">
+            <p>Al ser una app gratuita y Open Source sin certificado de pago de Apple, macOS puede mostrar un aviso la primera vez que la abras:</p>
+            <ol>
+              <li>Pulsa <strong>Aceptar</strong> (<em>Done</em>) en el aviso.</li>
+              <li>Abre <strong>Ajustes del Sistema → Privacidad y seguridad</strong>.</li>
+              <li>Baja hasta la sección <strong>Seguridad</strong> y pulsa <strong>Abrir de todos modos</strong> (<em>Open Anyway</em>).</li>
+            </ol>
+            <p class="mac-help-alt">O ejecuta en la Terminal tras moverla a Aplicaciones: <code>xattr -cr /Applications/Paperless.app</code></p>
+          </div>
+        </details>
       </div>
 
       <div class="hero-preview">

@@ -9,6 +9,15 @@ Aplicación nativa de notas adhesivas ("Post-its") flotantes para Windows, macOS
 - **Redimensionable y adaptable:** Ajusta el tamaño de cada nota desde la esquina inferior derecha; la barra de herramientas inferior se adapta automáticamente al espacio disponible.
 - **Guardado automático local:** El contenido enriquecido, color, tamaño y coordenadas `(x, y)` se guardan automáticamente en un archivo JSON local.
 
+## Instalación en macOS (Primer inicio)
+
+Al ser un proyecto gratuito y Open Source sin certificado de pago de Apple Developer, Gatekeeper puede mostrar el aviso *"Apple could not verify Paperless is free of malware..."* la primera vez que se abre:
+
+1. Pulsa **Aceptar** (*Done*) en el aviso.
+2. Ve a **Ajustes del Sistema → Privacidad y seguridad**.
+3. En la sección **Seguridad**, pulsa **Abrir de todos modos** (*Open Anyway*).
+   - *Alternativa por Terminal:* `xattr -cr /Applications/Paperless.app`
+
 ## Desarrollo local
 
 ```bash
