@@ -1,7 +1,7 @@
 {
   "name": "paperless",
   "productName": "Paperless",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Aplicación de notas adhesivas flotantes de escritorio con Electron",
   "main": "main.js",
   "repository": {
@@ -28,6 +28,7 @@
   "build": {
     "appId": "com.ivetetetete.paperless",
     "productName": "Paperless",
+    "afterPack": "scripts/afterPack.js",
     "publish": [
       {
         "provider": "github",
@@ -46,6 +47,7 @@
     ],
     "mac": {
       "icon": "assets/icon.icns",
+      "identity": "-",
       "category": "public.app-category.productivity",
       "artifactName": "Paperless-mac-${arch}.${ext}",
       "target": [

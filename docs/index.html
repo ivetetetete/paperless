@@ -26,7 +26,7 @@
   <main>
     <section class="hero container">
       <div class="hero-content">
-        <span class="badge" id="version-badge">Versión 1.0.0 · Gratis y Open Source</span>
+        <span class="badge" id="version-badge">Versión 1.1.0 · Gratis y Open Source</span>
         <h1>Tus ideas siempre visibles en tu escritorio.</h1>
         <p class="subtitle">
           Post-its flotantes, minimalistas y con comandos rápidos tipo Notion (<code>/</code>).
@@ -53,9 +53,13 @@
             <div class="platform-title">Windows</div>
             <div class="platform-ext">Instalador .exe (64-bit)</div>
           </a>
+          <a id="dl-linux-deb" href="https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-linux.deb" class="platform-card">
+            <div class="platform-title">Linux (Ubuntu / Pop!_OS / Debian)</div>
+            <div class="platform-ext">Instalador .deb</div>
+          </a>
           <a id="dl-linux" href="https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-linux.AppImage" class="platform-card">
-            <div class="platform-title">Linux</div>
-            <div class="platform-ext">Descargar .AppImage</div>
+            <div class="platform-title">Linux (Universal)</div>
+            <div class="platform-ext">Portable .AppImage</div>
           </a>
         </div>
       </div>
@@ -153,9 +157,9 @@
       primaryBtn.href = 'https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-Setup-win.exe';
       osLabel.textContent = 'Detectado: Windows (64-bit)';
     } else if (ua.includes('linux')) {
-      primaryText.textContent = 'Descargar para Linux (.AppImage)';
-      primaryBtn.href = 'https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-linux.AppImage';
-      osLabel.textContent = 'Detectado: Linux';
+      primaryText.textContent = 'Descargar para Linux (.deb)';
+      primaryBtn.href = 'https://github.com/ivetetetete/paperless/releases/latest/download/Paperless-linux.deb';
+      osLabel.textContent = 'Detectado: Linux · Instalador .deb (Ubuntu / Pop!_OS / Debian) y .AppImage abajo';
     }
 
     fetch('https://api.github.com/repos/ivetetetete/paperless/releases/latest')

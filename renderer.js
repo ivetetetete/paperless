@@ -2,11 +2,18 @@ const toolbar = document.getElementById('toolbar');
 const notesContainer = document.getElementById('notes-container');
 const btnNewNote = document.getElementById('btn-new-note');
 const btnToggleVisibility = document.getElementById('btn-toggle-visibility');
+const btnHistory = document.getElementById('btn-history');
+const historyBadge = document.getElementById('history-badge');
+const historyPanel = document.getElementById('history-panel');
+const historyList = document.getElementById('history-list');
+const btnSnapshotAll = document.getElementById('btn-snapshot-all');
+const btnClearHistory = document.getElementById('btn-clear-history');
 const btnQuit = document.getElementById('btn-quit');
 const slashMenu = document.getElementById('slash-menu');
 const slashMenuList = document.getElementById('slash-menu-list');
 
 const TOOLBAR_POS_KEY = 'paperless-toolbar-pos';
+const MAX_HISTORY_ITEMS = 50;
 
 const COLORS = ['yellow', 'pink', 'blue', 'green', 'purple'];
 const DEFAULT_WIDTH = 270;
@@ -15,6 +22,8 @@ const MIN_WIDTH = 120;
 const MIN_HEIGHT = 110;
 
 let notes = [];
+let noteHistory = [];
+let historyOpen = false;
 let highestZIndex = 10;
 let notesVisible = true;
 let isDraggingAny = false;
@@ -122,6 +131,8 @@ let slashState = {
 
 async function init() {
   notes = await window.stickyAPI.loadNotes();
+  const loadedHistory = await window.stickyAPI.loadHistory();
+  noteHistory = Array.isArray(loadedHistory) ? loadedHistory : [];
 
   if (!Array.isArray(notes) || notes.length === 0) {
     notes = [
@@ -129,7 +140,8 @@ async function init() {
         id: crypto.randomUUID(),
         content:
           '<h2>¡Hola! 👋</h2>' +
-          '<div>Escribe <b>/</b> o pulsa <b>/ Comandos</b> para insertar bloques estilo Notion.</div>' +
+          '<div>Escribe <b>/</b> o pulsa <b>/ Comandos</b> para insertar bloques de estilo.</div>' +
+          '<div>💾 <b>Tus notas se guardan solas en tu ordenador</b> aunque cierres la app o apagues el equipo, y si cierras alguna con <b>✕</b> puedes recuperarla desde el icono de <b>Historial</b> en la barra.</div>' +
           '<div class="todo-item" data-checked="false">Probar la lista de tareas con Enter</div>' +
           '<div class="todo-item completed" data-checked="true">Redimensionar desde la esquina inferior derecha</div>',
         color: 'yellow',
@@ -150,8 +162,14 @@ async function init() {
   });
 
   renderAllNotes();
+  renderHistory();
   setupToolbarDraggable();
   setupClickThroughHandling();
+
+  window.addEventListener('beforeunload', () => {
+    window.stickyAPI.saveNotes(notes);
+    window.stickyAPI.saveHistory(noteHistory);
+  });
 
   document.addEventListener('selectionchange', () => {
     const activeEl = document.activeElement;
@@ -863,6 +881,13 @@ window.addEventListener('mousedown', (e) => {
   ) {
     closeSlashMenu();
   }
+  if (
+    historyOpen &&
+    !e.target.closest('#history-panel') &&
+    !e.target.closest('#btn-history')
+  ) {
+    closeHistoryPanel();
+  }
 });
 
 function addNewNote() {
@@ -890,9 +915,207 @@ function addNewNote() {
   scheduleSave();
 }
 
+function getPlainTextFromHTML(html) {
+  const temp = document.createElement('div');
+  temp.innerHTML = html || '';
+  return (temp.textContent || temp.innerText || '').trim();
+}
+
+function addNoteToHistory(noteData, reason = 'Eliminada') {
+  const plainText = getPlainTextFromHTML(noteData.content);
+  if (!plainText) return;
+
+  const entry = {
+    historyId: crypto.randomUUID(),
+    noteId: noteData.id,
+    content: noteData.content,
+    preview: plainText,
+    color: noteData.color || 'yellow',
+    width: noteData.width || DEFAULT_WIDTH,
+    height: noteData.height || DEFAULT_HEIGHT,
+    x: noteData.x ?? 120,
+    y: noteData.y ?? 100,
+    reason,
+    savedAt: new Date().toISOString()
+  };
+
+  noteHistory.unshift(entry);
+  if (noteHistory.length > MAX_HISTORY_ITEMS) {
+    noteHistory = noteHistory.slice(0, MAX_HISTORY_ITEMS);
+  }
+  window.stickyAPI.saveHistory(noteHistory);
+  renderHistory();
+}
+
+function formatHistoryDate(isoString) {
+  try {
+    const date = new Date(isoString);
+    return date.toLocaleString('es-ES', {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (_e) {
+    return '';
+  }
+}
+
+function positionHistoryPanel() {
+  if (!toolbar || !historyPanel || !historyOpen) return;
+  const rect = toolbar.getBoundingClientRect();
+  const panelWidth = 320;
+  const panelHeight = Math.min(historyPanel.offsetHeight || 280, 400);
+
+  let left = Math.max(8, Math.min(rect.left, window.innerWidth - panelWidth - 8));
+  let top = rect.bottom + 10;
+
+  if (top + panelHeight > window.innerHeight - 8) {
+    top = Math.max(8, rect.top - panelHeight - 10);
+  }
+
+  historyPanel.style.left = `${Math.round(left)}px`;
+  historyPanel.style.top = `${Math.round(top)}px`;
+}
+
+function toggleHistoryPanel() {
+  historyOpen = !historyOpen;
+  btnHistory.classList.toggle('active', historyOpen);
+  if (historyOpen) {
+    closeSlashMenu();
+    renderHistory();
+    historyPanel.style.display = 'flex';
+    positionHistoryPanel();
+  } else {
+    historyPanel.style.display = 'none';
+  }
+}
+
+function closeHistoryPanel() {
+  if (!historyOpen) return;
+  historyOpen = false;
+  btnHistory.classList.remove('active');
+  historyPanel.style.display = 'none';
+}
+
+function restoreNoteFromHistory(historyId) {
+  const index = noteHistory.findIndex((item) => item.historyId === historyId);
+  if (index === -1) return;
+
+  const entry = noteHistory[index];
+  const offset = (notes.length % 6) * 20;
+  const maxX = Math.max(0, window.innerWidth - (entry.width || DEFAULT_WIDTH));
+  const maxY = Math.max(0, window.innerHeight - (entry.height || DEFAULT_HEIGHT));
+
+  const restoredNote = {
+    id: crypto.randomUUID(),
+    content: entry.content,
+    color: entry.color || 'yellow',
+    x: Math.max(20, Math.min((entry.x ?? 120) + offset, maxX)),
+    y: Math.max(20, Math.min((entry.y ?? 100) + offset, maxY)),
+    width: entry.width || DEFAULT_WIDTH,
+    height: entry.height || DEFAULT_HEIGHT,
+    zIndex: ++highestZIndex
+  };
+
+  notes.push(restoredNote);
+  const noteEl = createNoteElement(restoredNote);
+  notesContainer.appendChild(noteEl);
+
+  if (!notesVisible) {
+    btnToggleVisibility.click();
+  }
+
+  noteHistory.splice(index, 1);
+  window.stickyAPI.saveHistory(noteHistory);
+  scheduleSave();
+  renderHistory();
+}
+
+function removeHistoryItem(historyId) {
+  noteHistory = noteHistory.filter((item) => item.historyId !== historyId);
+  window.stickyAPI.saveHistory(noteHistory);
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!historyList || !historyBadge) return;
+
+  if (noteHistory.length > 0) {
+    historyBadge.textContent = String(noteHistory.length);
+    historyBadge.style.display = 'inline-flex';
+  } else {
+    historyBadge.style.display = 'none';
+  }
+
+  historyList.innerHTML = '';
+
+  if (noteHistory.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'history-empty';
+    empty.textContent =
+      'No hay notas en el historial. Cuando cierres una nota con texto o pulses "+ Guardar copia", aparecerá aquí para que puedas recuperarla.';
+    historyList.appendChild(empty);
+    return;
+  }
+
+  noteHistory.forEach((item) => {
+    const row = document.createElement('div');
+    row.className = 'history-item';
+
+    const top = document.createElement('div');
+    top.className = 'history-item-top';
+
+    const meta = document.createElement('div');
+    meta.className = 'history-item-meta';
+
+    const dot = document.createElement('span');
+    dot.className = 'history-color-dot';
+    dot.setAttribute('data-color', item.color || 'yellow');
+
+    const dateSpan = document.createElement('span');
+    dateSpan.textContent = `${item.reason || 'Guardada'} · ${formatHistoryDate(item.savedAt)}`;
+
+    meta.appendChild(dot);
+    meta.appendChild(dateSpan);
+
+    const btns = document.createElement('div');
+    btns.className = 'history-item-btns';
+
+    const restoreBtn = document.createElement('button');
+    restoreBtn.className = 'btn-restore-note';
+    restoreBtn.textContent = 'Restaurar';
+    restoreBtn.addEventListener('click', () => restoreNoteFromHistory(item.historyId));
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn-remove-history';
+    removeBtn.title = 'Eliminar del historial';
+    removeBtn.textContent = '✕';
+    removeBtn.addEventListener('click', () => removeHistoryItem(item.historyId));
+
+    btns.appendChild(restoreBtn);
+    btns.appendChild(removeBtn);
+
+    top.appendChild(meta);
+    top.appendChild(btns);
+
+    const preview = document.createElement('div');
+    preview.className = 'history-item-preview';
+    preview.textContent = item.preview || getPlainTextFromHTML(item.content) || '(Nota sin texto)';
+
+    row.appendChild(top);
+    row.appendChild(preview);
+    historyList.appendChild(row);
+  });
+}
+
 function deleteNote(id, noteEl) {
   if (slashState.open && slashState.activeNoteData?.id === id) {
     closeSlashMenu();
+  }
+  const targetNote = notes.find((n) => n.id === id);
+  if (targetNote) {
+    addNoteToHistory(targetNote, 'Cerrada');
   }
   notes = notes.filter((n) => n.id !== id);
   noteEl.remove();
@@ -952,6 +1175,7 @@ function setupToolbarDraggable() {
 
       toolbar.style.left = `${pos.x}px`;
       toolbar.style.top = `${pos.y}px`;
+      if (historyOpen) positionHistoryPanel();
     };
 
     const onMouseUp = () => {
@@ -978,6 +1202,7 @@ function setupToolbarDraggable() {
     const pos = clampToolbarPosition(rect.left, rect.top);
     toolbar.style.left = `${pos.x}px`;
     toolbar.style.top = `${pos.y}px`;
+    if (historyOpen) positionHistoryPanel();
   });
 }
 
@@ -1116,8 +1341,21 @@ btnToggleVisibility.addEventListener('click', () => {
   btnToggleVisibility.title = notesVisible ? 'Ocultar notas' : 'Mostrar notas';
 });
 
+btnHistory.addEventListener('click', toggleHistoryPanel);
+
+btnSnapshotAll.addEventListener('click', () => {
+  notes.forEach((n) => addNoteToHistory(n, 'Copia'));
+});
+
+btnClearHistory.addEventListener('click', () => {
+  noteHistory = [];
+  window.stickyAPI.saveHistory(noteHistory);
+  renderHistory();
+});
+
 btnQuit.addEventListener('click', async () => {
   await saveNotesImmediate();
+  await window.stickyAPI.saveHistory(noteHistory);
   window.stickyAPI.quitApp();
 });
 

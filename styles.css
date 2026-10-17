@@ -96,6 +96,34 @@ html, body {
   background: rgba(239, 71, 111, 0.45);
 }
 
+#toolbar #btn-history {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 10px;
+}
+
+#toolbar #btn-history.active {
+  background: rgba(255, 209, 102, 0.28);
+  color: #ffd166;
+}
+
+.history-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 10px;
+  background: #ffd166;
+  color: #1d1d1d;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 #toolbar #btn-quit:hover {
   background: #ef476f;
   color: #fff;
@@ -499,3 +527,176 @@ html, body {
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
 }
+
+.history-panel {
+  position: fixed;
+  top: 70px;
+  left: 20px;
+  z-index: 100000;
+  width: 320px;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(28, 28, 34, 0.94);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
+  color: #f4f4f6;
+  overflow: hidden;
+  animation: popIn 0.15s ease-out;
+}
+
+.history-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.history-panel-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.history-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-action-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f4f4f6;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.history-action-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.history-action-btn.danger:hover {
+  background: rgba(239, 71, 111, 0.35);
+  color: #ff8fa3;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-empty {
+  padding: 20px 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.15s ease;
+}
+
+.history-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.history-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.history-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.history-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.history-color-dot[data-color="yellow"] { background-color: #ffe066; }
+.history-color-dot[data-color="pink"]   { background-color: #ff9ebb; }
+.history-color-dot[data-color="blue"]   { background-color: #8ecae6; }
+.history-color-dot[data-color="green"]  { background-color: #95d5b2; }
+.history-color-dot[data-color="purple"] { background-color: #b892ff; }
+
+.history-item-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-restore-note {
+  border: none;
+  background: #ffd166;
+  color: #1d1d1d;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-restore-note:hover {
+  background: #ffca4b;
+}
+
+.btn-remove-history {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-history:hover {
+  background: rgba(239, 71, 111, 0.3);
+  color: #ff8fa3;
+}
+
+.history-item-preview {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+

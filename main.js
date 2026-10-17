@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const DATA_PATH = path.join(app.getPath('userData'), 'sticky-notes-data.json');
+const HISTORY_PATH = path.join(app.getPath('userData'), 'sticky-notes-history.json');
 const ICON_PATH = path.join(__dirname, 'assets', 'icon.png');
 
 let mainWindow;
@@ -57,6 +58,29 @@ ipcMain.handle('notes:save', async (_event, notes) => {
     return { success: true };
   } catch (error) {
     console.error('Error al guardar las notas:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('history:load', async () => {
+  try {
+    if (fs.existsSync(HISTORY_PATH)) {
+      const rawData = fs.readFileSync(HISTORY_PATH, 'utf-8');
+      return JSON.parse(rawData);
+    }
+    return [];
+  } catch (error) {
+    console.error('Error al cargar el historial:', error);
+    return [];
+  }
+});
+
+ipcMain.handle('history:save', async (_event, history) => {
+  try {
+    fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2), 'utf-8');
+    return { success: true };
+  } catch (error) {
+    console.error('Error al guardar el historial:', error);
     return { success: false, error: error.message };
   }
 });
